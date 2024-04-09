@@ -1,4 +1,4 @@
-const apiBaseUrl = 'https://your-azure-api-host.com'; 
+const apiBaseUrl = 'https://mango-meadow-04ca6a810.5.azurestaticapps.net'; 
 document.addEventListener('DOMContentLoaded', () => {
     const loadCarsBtn = document.getElementById('loadCarsBtn');
     const carList = document.getElementById('carList');
