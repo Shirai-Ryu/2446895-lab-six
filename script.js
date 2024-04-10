@@ -1,4 +1,4 @@
-const apiBaseUrl = 'https://zealous-desert-0f1191903.5.azurestaticapps.net'; 
+const apiBaseUrl = 'https://mango-meadow-04ca6a810.5.azurestaticapps.net'; 
 document.addEventListener('DOMContentLoaded', () => {
     const loadCarsBtn = document.getElementById('loadCarsBtn');
     const carList = document.getElementById('carList');
