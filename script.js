@@ -1,10 +1,12 @@
-const apiBaseUrl = 'https://mango-meadow-04ca6a810.5.azurestaticapps.net'; 
+const apiBaseUrl = 'https://mango-meadow-04ca6a810.5.azurestaticapps.net';
+
 document.addEventListener('DOMContentLoaded', () => {
     const loadCarsBtn = document.getElementById('loadCarsBtn');
     const carList = document.getElementById('carList');
-    cars = [];
+    let cars = [];
+
     loadCarsBtn.addEventListener('click', () => {
-        fetch('http://localhost:3001/cars')
+        fetch(`${apiBaseUrl}/GetCars`)
             .then(response => response.json())
             .then(data => {
                 cars = data;
@@ -15,8 +17,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     carCard.innerHTML = `
                         <h2>${car.make} ${car.model}</h2>
                         <p><strong>Year:</strong> ${car.year}</p>
-                        <p><strong>Make:</strong> ${car.make}</p>
-                        <p><strong>Model:</strong> ${car.model}</p>
                         <p><strong>Price:</strong> R${car.price}</p>
                         <button class="btn btn-remove" data-index="${index}">Remove</button>
                     `;
@@ -27,11 +27,21 @@ document.addEventListener('DOMContentLoaded', () => {
                 console.error('Error fetching car data:', error);
             });
     });
-});
 
+    const carForm = document.getElementById('carForm');
+    carForm.addEventListener('submit', event => {
+        event.preventDefault();
+        const make = document.getElementById('make').value;
+        const model = document.getElementById('model').value;
+        const year = document.getElementById('year').value;
+        const color = document.getElementById('color').value; // Assuming you have a color input
+        const price = document.getElementById('price').value;
+        addCar({ make, model, year, color, price });
+        carForm.reset();
+    });
 
     function addCar(newCar) {
-        fetch(`${apiBaseUrl}/cars`, {
+        fetch(`${apiBaseUrl}/AddCar`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -48,40 +58,26 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    carForm.addEventListener('submit', event => {
-        event.preventDefault();
-        const make = document.getElementById('make').value;
-        const model = document.getElementById('model').value;
-        const year = document.getElementById('year').value;
-        const color = document.getElementById('color').value; // Get the color value
-        const price = document.getElementById('price').value;
-        addCar({ make, model, year, color, price }); // Include color in the new car object
-        carForm.reset();
-    });
-
-
-
-// Function to remove a car
-function removeCar(index) {
-    const carId = cars[index].id;
-    fetch(`http://localhost:3001/cars/${carId}`, {
-        method: 'DELETE'
-    })
+    function removeCar(index) {
+        const carId = cars[index].id;
+        fetch(`${apiBaseUrl}/DeleteCar/${carId}`, {
+            method: 'DELETE'
+        })
         .then(response => response.json())
         .then(data => {
             console.log('Success:', data);
-            //reload cars
-            // const loadCarsBtn = document.getElementById('loadCarsBtn');
             loadCarsBtn.click();
         })
         .catch(error => {
             console.error('Error:', error);
         });
-}
-// Event delegation for remove buttons
-carList.addEventListener('click', event => {
-    if (event.target.classList.contains('btn-remove')) {
-        const index = event.target.dataset.index;
-        removeCar(index);
     }
+
+    carList.addEventListener('click', event => {
+        if (event.target.classList.contains('btn-remove')) {
+            const index = event.target.dataset.index;
+            removeCar(index);
+        }
+    });
 });
+
